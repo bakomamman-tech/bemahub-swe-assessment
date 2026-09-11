@@ -1,0 +1,145 @@
+BemaHub Task 4 - Runtime Evidence
+=================================
+
+
+=== DEFECT 1 BEFORE: learner GET /me/earnings ===
+HTTP/1.1 200 OK
+Date: Fri, 11 Sep 2026 16:43:15 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: GET
+Vary: Origin
+Content-Length: 109
+Content-Type: application/json; charset=UTF-8
+
+{"availableMinor":0,"pendingMinor":0,"currency":"NGN","minimumWithdrawalMinor":50000,"lastWithdrawalAt":null}
+=== DEFECT 2 BEFORE: course detail lessonCount ===
+HTTP/1.1 200 OK
+Date: Fri, 11 Sep 2026 16:43:47 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: GET
+Vary: Origin
+Content-Length: 324
+Content-Type: application/json; charset=UTF-8
+
+{"id":1,"title":"Introduction to Bread Baking","instructorName":"Ada Okafor","priceMinor":4500,"currency":"NGN","enrolmentCount":128,"averageRating":4.6,"publishedAt":"2026-03-14T08:00:00+00:00","isPublished":true,"description":"Introduction to Bread Baking - a short course for the assessment environment.","lessonCount":0}
+=== DEFECT 3 BEFORE: unpublished course leaked by public list ===
+HTTP/1.1 200 OK
+Date: Fri, 11 Sep 2026 16:44:34 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: GET
+Vary: Origin
+Content-Length: 1063
+Content-Type: application/json; charset=UTF-8
+
+{"courses":[{"id":4,"title":"Cake Decorating Basics","instructorName":"Ada Okafor","priceMinor":3000,"currency":"NGN","enrolmentCount":9,"averageRating":0,"publishedAt":"2026-06-11T08:00:00+00:00","isPublished":true},{"id":3,"title":"Pastry Fundamentals","instructorName":"Ada Okafor","priceMinor":7500,"currency":"NGN","enrolmentCount":null,"averageRating":null,"publishedAt":"2026-05-20T08:00:00+00:00","isPublished":true},{"id":2,"title":"Sourdough Starters","instructorName":"Ada Okafor","priceMinor":6000,"currency":"NGN","enrolmentCount":64,"averageRating":4.2,"publishedAt":"2026-04-02T08:00:00+00:00","isPublished":true},{"id":1,"title":"Introduction to Bread Baking","instructorName":"Ada Okafor","priceMinor":4500,"currency":"NGN","enrolmentCount":128,"averageRating":4.6,"publishedAt":"2026-03-14T08:00:00+00:00","isPublished":true},{"id":5,"title":"Advanced Laminated Dough","instructorName":"Ada Okafor","priceMinor":9000,"currency":"NGN","enrolmentCount":0,"averageRating":null,"publishedAt":null,"isPublished":false}],"previewExpiresInSeconds":300}
+=== DEFECT 4 CONTEXT: instructor earnings and minimum ===
+HTTP/1.1 200 OK
+Date: Fri, 11 Sep 2026 16:58:50 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: GET
+Vary: Origin
+Content-Length: 118
+Content-Type: application/json; charset=UTF-8
+
+{"availableMinor":128500,"pendingMinor":45000,"currency":"NGN","minimumWithdrawalMinor":50000,"lastWithdrawalAt":null}
+=== DEFECT 4 BEFORE: below-minimum withdrawal accepted ===
+HTTP/1.1 201 Created
+Date: Fri, 11 Sep 2026 16:59:42 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: POST
+Content-Length: 136
+Content-Type: application/json; charset=UTF-8
+
+{"id":1,"amountMinor":10000,"status":"pending","payoutReference":"wd_before_minimum_1789145950","createdAt":"2026-09-11T16:59:42+00:00"}
+=== DEFECT 1 AFTER: learner denied instructor earnings ===
+HTTP/1.1 403 Forbidden
+Date: Fri, 11 Sep 2026 17:30:51 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Vary: Origin
+Content-Length: 72
+Content-Type: application/json; charset=UTF-8
+
+{"code":"forbidden","message":"Instructors only.","data":{"status":403}}
+=== DEFECT 2 AFTER: course detail uses lesson_count ===
+HTTP/1.1 200 OK
+Date: Fri, 11 Sep 2026 17:31:23 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: GET
+Vary: Origin
+Content-Length: 325
+Content-Type: application/json; charset=UTF-8
+
+{"id":1,"title":"Introduction to Bread Baking","instructorName":"Ada Okafor","priceMinor":4500,"currency":"NGN","enrolmentCount":128,"averageRating":4.6,"publishedAt":"2026-03-14T08:00:00+00:00","isPublished":true,"description":"Introduction to Bread Baking - a short course for the assessment environment.","lessonCount":12}
+=== DEFECT 3 AFTER: public list excludes unpublished course ===
+HTTP/1.1 200 OK
+Date: Fri, 11 Sep 2026 17:31:54 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: GET
+Vary: Origin
+Content-Length: 875
+Content-Type: application/json; charset=UTF-8
+
+{"courses":[{"id":4,"title":"Cake Decorating Basics","instructorName":"Ada Okafor","priceMinor":3000,"currency":"NGN","enrolmentCount":9,"averageRating":0,"publishedAt":"2026-06-11T08:00:00+00:00","isPublished":true},{"id":3,"title":"Pastry Fundamentals","instructorName":"Ada Okafor","priceMinor":7500,"currency":"NGN","enrolmentCount":null,"averageRating":null,"publishedAt":"2026-05-20T08:00:00+00:00","isPublished":true},{"id":2,"title":"Sourdough Starters","instructorName":"Ada Okafor","priceMinor":6000,"currency":"NGN","enrolmentCount":64,"averageRating":4.2,"publishedAt":"2026-04-02T08:00:00+00:00","isPublished":true},{"id":1,"title":"Introduction to Bread Baking","instructorName":"Ada Okafor","priceMinor":4500,"currency":"NGN","enrolmentCount":128,"averageRating":4.6,"publishedAt":"2026-03-14T08:00:00+00:00","isPublished":true}],"previewExpiresInSeconds":300}
+=== DEFECT 4 AFTER: below-minimum withdrawal rejected ===
+HTTP/1.1 422 Unprocessable Entity
+Date: Fri, 11 Sep 2026 17:32:42 GMT
+Server: Apache/2.4.67 (Debian)
+X-Powered-By: PHP/8.3.31
+X-Robots-Tag: noindex
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: POST
+Content-Length: 112
+Content-Type: application/json; charset=UTF-8
+
+{"code":"below_minimum","message":"The requested amount is below the minimum withdrawal.","data":{"status":422}}
