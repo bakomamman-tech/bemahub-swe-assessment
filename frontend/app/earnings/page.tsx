@@ -11,6 +11,7 @@ import { getEarnings } from "@/lib/api/services/earnings";
 import { useAuthStore } from "@/lib/auth/authStore";
 import { formatMoney } from "@/lib/format";
 import type { ApiError, Earnings } from "@/lib/types/api";
+import { WithdrawalForm } from "@/components/WithdrawalForm";
 
 export default function EarningsPage() {
   const router = useRouter();
@@ -172,6 +173,11 @@ export default function EarningsPage() {
           </dd>
         </div>
       </dl>
+      <WithdrawalForm
+  availableMinor={earnings.availableMinor}
+  minimumWithdrawalMinor={earnings.minimumWithdrawalMinor}
+  currency={earnings.currency}
+/>
     </section>
   );
 }
