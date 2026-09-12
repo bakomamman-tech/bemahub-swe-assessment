@@ -1,0 +1,10 @@
+=== Task 7: successful run ===
+instructor_id,total_net_minor
+7,84750
+9,79700
+11,30000
+SUCCESS EXIT CODE: 0
+
+=== Task 7: missing file run ===
+error: could not read or parse definitely-missing.json: [Errno 2] No such file or directory: 'definitely-missing.json'
+MISSING FILE EXIT CODE: 2
