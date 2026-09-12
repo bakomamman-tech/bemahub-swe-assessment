@@ -1,17 +1,20 @@
 /**
  * Shared axios instance.
  *
- * The request interceptor is wired for you: it attaches the stored bearer
- * token. You should not need to set the Authorization header by hand anywhere
- * else in the app.
+ * The request interceptor attaches the stored bearer token automatically.
+ * Callers should never set Authorization manually.
  *
- * The RESPONSE interceptor is deliberately incomplete - see TASK-2.
+ * A 401 response clears stale authentication state. The original Axios error
+ * is still rejected so callers can distinguish an HTTP/business refusal from
+ * a transport failure where error.response is undefined.
  */
 import axios from "axios";
-import { getStoredToken } from "@/lib/auth/authStore";
+
+import { getStoredToken, useAuthStore } from "@/lib/auth/authStore";
 
 const baseURL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/wp-json/bemalearn/v1";
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:8080/wp-json/bemalearn/v1";
 
 export const api = axios.create({
   baseURL,
@@ -21,15 +24,24 @@ export const api = axios.create({
 api.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
     const token = getStoredToken();
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
   }
+
   return config;
 });
 
-// TODO (Task 2): handle 401 here.
-// Think about what should happen to stored auth state, and how a caller can
-// tell a TRANSPORT failure (no response at all) from a BUSINESS refusal.
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      useAuthStore.getState().signOut();
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;
